@@ -1,0 +1,35 @@
+---
+- name: Install antivirus
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install antivirus on Ubuntu
+      apt:
+        name: clamav
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Install antivirus on CentOS
+      yum:
+        name: clamav
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Start antivirus service on Ubuntu
+      service:
+        name: clamav-freshclam
+        state: started
+      when: ansible_os_family == 'Debian'
+
+    - name: Start antivirus service on CentOS
+      service:
+        name: clamav-freshclam.service
+        state: started
+      when: ansible_os_family == 'RedHat'
+
